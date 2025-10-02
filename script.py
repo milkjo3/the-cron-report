@@ -28,7 +28,6 @@ def get_yesterdays_headlines(n = 3, country = "us", q = "news"):
 
     Returns:
         The n headlines from the country using the q keywords or phrases.
-        May prematurely return 
 
     Raises:
         ValueError if the API key is missing in the enviornment variables.
