@@ -16,6 +16,33 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def get_weather_forecasts(coord = [39.742043, -104.991531]):
+    '''
+    Get the current hourly weather forcast for the location given using 
+        latitude/longitude coordinates.
+
+    Args:
+
+    Returns:
+
+    Raises:
+    '''
+    today = date.today()
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": coord[0],
+        "longitude": coord[1],
+        "hourly": "temperature_2m",
+        "temperature_unit" : "fahrenheit",
+        "start_date" : date.today(),
+        "end_date" : today + timedelta(days=1)
+    }
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    data = response.json()
+    
+    return data
+
 def get_yesterdays_headlines(n = 3, country = "us", q = "news"):
     """
     Get the top n headlines from yesterday's news
@@ -24,7 +51,7 @@ def get_yesterdays_headlines(n = 3, country = "us", q = "news"):
     Args:
         n : Desired number of articles to be retrieved. 
         country : Desired country where the news is being covered.
-        q : Desired query or keyword searches. 
+        q : Desired query or keyword search. 
 
     Returns:
         The n headlines from the country using the q keywords or phrases.
@@ -56,11 +83,8 @@ def get_yesterdays_headlines(n = 3, country = "us", q = "news"):
     }
 
     response = requests.get(url, params=params)
+    response.raise_for_status()
     data = response.json()
-
-    if data.get("status") != "ok":
-        error_msg = data.get("message", "Unknown error")
-        raise RuntimeError(f"Error fetching news... {error_msg}")
     
     headlines = []
     for article in data["articles"]:
@@ -73,3 +97,4 @@ def get_yesterdays_headlines(n = 3, country = "us", q = "news"):
 
 if __name__ == "__main__":
     print(get_yesterdays_headlines())
+    print(get_weather_forecasts())
